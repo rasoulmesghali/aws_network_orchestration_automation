@@ -174,7 +174,7 @@
           - set transform-set TS 
           - match address 100
 
-    - name: add GigabitEthernet2 in vrf site1 subinterface on siteA
+    - name: add GigabitEthernet3 in vrf site1 subinterface on siteA
       ios_config:
         provider: "{{cli}}"
         lines:
@@ -182,9 +182,9 @@
           - vrf forwarding site2
           - ip address 10.0.12.10 255.255.255.0
         parents:
-          - interface GigabitEthernet2
+          - interface GigabitEthernet3
 
-    - name: add GigabitEthernet3 in vrf site1 subinterface on siteA
+    - name: add GigabitEthernet2 in vrf site1 subinterface on siteA
       ios_config:
         provider: "{{cli}}"
         lines:
@@ -192,7 +192,7 @@
           - vrf forwarding site1
           - ip address 10.0.11.10 255.255.255.0
         parents:
-          - interface GigabitEthernet3
+          - interface GigabitEthernet2
 
     - name: add BGP on siteA for inter-vrf routing for vrf site1, site2
       ios_config:
