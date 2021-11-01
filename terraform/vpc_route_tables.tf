@@ -26,7 +26,22 @@ resource "aws_route_table" "central_edge_b" {
 
 resource "aws_route_table" "site_1b" {
   vpc_id = aws_vpc.main.id
-
+  route {
+      cidr_block = "0.0.0.0/0"
+      network_interface_id = "${aws_network_interface.erb_1.id}"
+    }
+  route {
+      cidr_block = "10.0.12.0/24"
+      network_interface_id = "${aws_network_interface.erb_1.id}"
+    }
+  route {
+      cidr_block = "10.0.11.0/24"
+      network_interface_id = "${aws_network_interface.erb_1.id}"
+    }
+    route {
+      cidr_block = "10.0.22.0/24"
+      network_interface_id = "${aws_network_interface.erb_1.id}"
+    }
   tags = {
     Name = "site_1b"
   }
@@ -34,7 +49,22 @@ resource "aws_route_table" "site_1b" {
 
 resource "aws_route_table" "site_2b" {
   vpc_id = aws_vpc.main.id
-
+  route {
+      cidr_block = "0.0.0.0/0"
+      network_interface_id = "${aws_network_interface.erb_2.id}"
+    }
+  route {
+      cidr_block = "10.0.12.0/24"
+      network_interface_id = "${aws_network_interface.erb_2.id}"
+    }
+  route {
+      cidr_block = "10.0.21.0/24"
+      network_interface_id = "${aws_network_interface.erb_2.id}"
+    }
+    route {
+      cidr_block = "10.0.11.0/24"
+      network_interface_id = "${aws_network_interface.erb_2.id}"
+    }
   tags = {
     Name = "site_2b"
   }
@@ -43,6 +73,22 @@ resource "aws_route_table" "site_2b" {
 resource "aws_route_table" "site_1a" {
   vpc_id = aws_vpc.main.id
 
+  route {
+      cidr_block = "0.0.0.0/0"
+      network_interface_id = "${aws_network_interface.era_1.id}"
+    }
+  route {
+      cidr_block = "10.0.12.0/24"
+      network_interface_id = "${aws_network_interface.era_1.id}"
+    }
+  route {
+      cidr_block = "10.0.21.0/24"
+      network_interface_id = "${aws_network_interface.era_1.id}"
+    }
+    route {
+      cidr_block = "10.0.22.0/24"
+      network_interface_id = "${aws_network_interface.era_1.id}"
+    }
   tags = {
     Name = "site_1a"
   }
@@ -50,7 +96,22 @@ resource "aws_route_table" "site_1a" {
 
 resource "aws_route_table" "site_2a" {
   vpc_id = aws_vpc.main.id
-
+  route {
+      cidr_block = "0.0.0.0/0"
+      network_interface_id = "${aws_network_interface.era_2.id}"
+    }
+  route {
+      cidr_block = "10.0.11.0/24"
+      network_interface_id = "${aws_network_interface.era_2.id}"
+    }
+  route {
+      cidr_block = "10.0.21.0/24"
+      network_interface_id = "${aws_network_interface.era_2.id}"
+    }
+  route {
+      cidr_block = "10.0.22.0/24"
+      network_interface_id = "${aws_network_interface.era_2.id}"
+    }
   tags = {
     Name = "site_2a"
   }
@@ -109,23 +170,23 @@ resource "aws_route" "default_route_for_central_edge_b" {
 # resource "aws_route" "default_route_for_site_1a" {
 #   route_table_id         = aws_route_table.site_1a.id
 #   destination_cidr_block = "0.0.0.0/0"
-#   gateway_id             = aws_network_interface.era_1.id
+#   network_interface_id   = aws_network_interface.era_1.id
 # }
 
 # resource "aws_route" "default_route_for_site_2a" {
 #   route_table_id         = aws_route_table.site_2a.id
 #   destination_cidr_block = "0.0.0.0/0"
-#   gateway_id             = aws_network_interface.era_2.id
+#   network_interface_id   = aws_network_interface.era_2.id
 # }
 
 # resource "aws_route" "default_route_for_site_1b" {
 #   route_table_id         = aws_route_table.site_1b.id
 #   destination_cidr_block = "0.0.0.0/0"
-#   gateway_id             = aws_network_interface.erb_1.id
+#   network_interface_id   = aws_network_interface.erb_1.id
 # }
 
 # resource "aws_route" "default_route_for_site_2b" {
 #   route_table_id         = aws_route_table.site_2b.id
 #   destination_cidr_block = "0.0.0.0/0"
-#   gateway_id             = aws_network_interface.erb_2.id
+#   network_interface_id   = aws_network_interface.erb_2.id
 # }

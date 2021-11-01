@@ -8,7 +8,7 @@
   vars:
     cli:
       username: ec2-user
-      ssh_keyfile: key1.pem
+      # ssh_keyfile: key1.pem
   # vars:
   #   cli:
   #     username: cisco

@@ -11,5 +11,6 @@ terraform {
 provider "aws" {
   # Configuration options
   region  = var.aws_region
-  profile = "mesghalir"
+  # profile = "mesghalir"
+  profile = "rasoulmesghali"
 }

@@ -48,3 +48,16 @@ resource "aws_instance" "vm1_site_2b" {
     "Name" = "vm1_site_2b"
   }
 }
+
+resource "aws_instance" "connection_test_vm" {
+  ami                    = data.aws_ami.amzlinux2.id
+  instance_type          = "t2.micro"
+  subnet_id = aws_subnet.main.id
+  private_ip = "10.0.10.200"
+  associate_public_ip_address = "true"
+  vpc_security_group_ids = [aws_security_group.allow_all.id]
+  key_name = "key1"
+  tags = {
+    "Name" = "connection_test_vm"
+  }
+}

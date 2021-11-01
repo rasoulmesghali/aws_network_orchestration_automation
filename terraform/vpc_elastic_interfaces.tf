@@ -3,9 +3,13 @@ resource "aws_network_interface" "cr_1" {
   private_ips     = ["10.0.1.10"]
   security_groups = [aws_security_group.allow_all.id]
   description     = "cr_1"
+  source_dest_check = false
   attachment {
     instance     = aws_instance.centralRouter.id
     device_index = 1
+  }
+  tags = {
+    "Name" = "cr_1"
   }
 }
 
@@ -14,9 +18,13 @@ resource "aws_network_interface" "cr_2" {
   private_ips     = ["10.0.2.10"]
   security_groups = [aws_security_group.allow_all.id]
   description     = "cr_2"
+  source_dest_check = false
   attachment {
     instance     = aws_instance.centralRouter.id
     device_index = 2
+  }
+  tags = {
+    "Name" = "cr_2"
   }
 }
 
@@ -25,9 +33,13 @@ resource "aws_network_interface" "era_1" {
   private_ips     = ["10.0.11.10"]
   security_groups = [aws_security_group.allow_all.id]
   description     = "era_1"
+  source_dest_check = false
   attachment {
     instance     = aws_instance.edgeRouterA.id
     device_index = 1
+  }
+  tags = {
+    "Name" = "era_1"
   }
 }
 
@@ -36,9 +48,13 @@ resource "aws_network_interface" "era_2" {
   private_ips     = ["10.0.12.10"]
   security_groups = [aws_security_group.allow_all.id]
   description     = "era_2"
+  source_dest_check = false
   attachment {
     instance     = aws_instance.edgeRouterA.id
     device_index = 2
+  }
+  tags = {
+    "Name" = "era_2"
   }
 }
 
@@ -59,9 +75,13 @@ resource "aws_network_interface" "erb_1" {
   private_ips     = ["10.0.21.10"]
   security_groups = [aws_security_group.allow_all.id]
   description     = "erb_1"
+  source_dest_check = false
   attachment {
     instance     = aws_instance.edgeRouterB.id
     device_index = 1
+  }
+  tags = {
+    "Name" = "erb_1"
   }
 }
 
@@ -70,9 +90,13 @@ resource "aws_network_interface" "erb_2" {
   private_ips     = ["10.0.22.10"]
   security_groups = [aws_security_group.allow_all.id]
   description     = "erb_2"
+  source_dest_check = false
   attachment {
     instance     = aws_instance.edgeRouterB.id
     device_index = 2
+  }
+  tags = {
+    "Name" = "erb_2"
   }
 }
 

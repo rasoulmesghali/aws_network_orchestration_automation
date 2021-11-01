@@ -8,7 +8,7 @@
   vars:
     cli:
       username: ec2-user
-      ssh_keyfile: key1.pem
+      # ssh_keyfile: key1.pem
   # vars:
   #   cli:
   #     username: cisco
@@ -98,7 +98,7 @@
           - vrf forwarding site1
           - ip address 10.0.101.2 255.255.255.252
           - tunnel source 10.0.1.11
-          - tunnel destination 10.0.1.10
+          - tunnel destination 10.0.105.1
         parents:
           - interface Tunnel10
 
@@ -110,8 +110,7 @@
           - vrf forwarding site2
           - ip address 10.0.102.2 255.255.255.252
           - tunnel source 10.0.1.11
-          - tunnel destination 10.0.1.10
-          - tunnel mode ipip
+          - tunnel destination 10.0.105.2
         parents:
           - interface Tunnel20
 
@@ -237,6 +236,7 @@
         lines:
           - ip route vrf site1 0.0.0.0 0.0.0.0 Tunnel10
           - ip route vrf site2 0.0.0.0 0.0.0.0 Tunnel20
+          - ip route 10.0.105.0 255.255.255.248 10.0.1.10
 
     - name: add crypto-map under GigabitEthernet1 interface on siteA
       ios_config:

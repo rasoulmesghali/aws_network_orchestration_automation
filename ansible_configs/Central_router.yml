@@ -8,7 +8,7 @@
   vars:
     cli:
       username: ec2-user
-      ssh_keyfile: key1.pem
+      # ssh_keyfile: key1.pem
   # vars:
   #   cli:
   #     username: cisco
@@ -177,6 +177,24 @@
         parents:
           - interface loopback2
 
+    - name: add loopback10 interface on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - description tunnel10 source ip
+          - ip address 10.0.105.1 255.255.255.255
+        parents:
+          - interface loopback10
+
+    - name: add loopback20 interface on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - description tunnel20 source ip
+          - ip address 10.0.105.2 255.255.255.255
+        parents:
+          - interface loopback20
+
     - name: add Tunnel10 for ipip over ipsec on siteA
       ios_config:
         provider: "{{cli}}"
@@ -184,7 +202,7 @@
           - no shutdown
           - vrf forwarding site1
           - ip address 10.0.101.1 255.255.255.252
-          - tunnel source 10.0.1.10
+          - tunnel source 10.0.105.1
           - tunnel destination 10.0.1.11
           - ip nat inside
         parents:
@@ -197,9 +215,8 @@
           - no shutdown
           - vrf forwarding site2
           - ip address 10.0.102.1 255.255.255.252
-          - tunnel source 10.0.1.10
+          - tunnel source 10.0.105.2
           - tunnel destination 10.0.1.11
-          - tunnel mode ipip
         parents:
           - interface Tunnel20
 
@@ -327,6 +344,10 @@
         parents:
           - ip access-list extended natAcl
         lines:
+          - 2 deny ip 10.0.21.0 0.0.0.255 10.0.0.0 0.255.255.255
+          - 3 deny ip 10.0.22.0 0.0.0.255 10.0.0.0 0.255.255.255
+          - 5 deny ip 10.0.11.0 0.0.0.255 10.0.0.0 0.255.255.255
+          - 6 deny ip 10.0.12.0 0.0.0.255 10.0.0.0 0.255.255.255
           - 10 permit ip 10.0.11.0 0.0.0.255 any
           - 20 permit ip 10.0.21.0 0.0.0.255 any
 
