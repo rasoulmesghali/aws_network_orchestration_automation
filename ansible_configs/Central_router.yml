@@ -1,0 +1,354 @@
+---
+
+# Configuring IPSec on Router on central router
+- hosts: central
+  gather_facts: false
+  connection: local
+
+  vars:
+    cli:
+      username: ec2-user
+      ssh_keyfile: key1.pem
+  # vars:
+  #   cli:
+  #     username: cisco
+  #     password: cisco
+  tasks:
+    - name: add Basic Config
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - hostname Central
+          - no ip domain lookup
+
+    - name: add ospf on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - router-id 10.0.2.10
+          - neighbor 10.0.110.2
+        parents:
+          - router ospf 1
+
+    - name: add vrf definition site1 on siteA
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - rd 1111:3
+        parents:
+          - vrf definition site1
+
+    - name: add vrf definition site2 on siteA
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - rd 2222:3
+        parents:
+          - vrf definition site2
+
+    - name: add vrf definition site1 on siteA      
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - route-target export 111:1000000
+          - route-target import 111:1000000
+          - route-target export 111:1000000 stitching
+          - route-target import 111:1000000 stitching
+        parents:
+          - vrf definition site1
+          - address-family ipv4
+
+    - name: add vrf definition site2 on siteA
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - route-target export 222:1000000
+          - route-target import 222:1000000
+          - route-target export 222:1000000 stitching
+          - route-target import 222:1000000 stitching
+        parents:
+          - vrf definition site2
+          - address-family ipv4
+      
+    - name: add bridge-domain1 on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - member vni 1000000
+        parents:
+          - bridge-domain 1
+
+    - name: add bridge-domain2 on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - member vni 2000000
+        parents:
+          - bridge-domain 2
+
+    - name: Set IPSEC Interesting Traffic Accesslist for vrf site1 on siteA
+      ios_config:
+        provider: "{{cli}}"
+        parents:
+          - ip access-list extended 100
+        lines:
+          - 10 permit ipinip host 10.0.1.10 host 10.0.1.11
+          - 20 permit gre host 10.0.1.10 host 10.0.1.11
+
+    - name: Set policy and ISAKMP exchange key on siteA
+      ios_config:
+        provider: "{{cli}}"
+        parents:
+          - crypto isakmp policy 10
+        lines:
+          - hash sha256
+          - encryption aes 256
+          - group 14
+          - authentication pre-share
+  
+    - name: Define ISAKMP key and Peer on siteA
+      ios_config:
+        provider: "{{cli}}"
+        commands:
+          - crypto isakmp key IPsecP@$$ address 10.0.1.11
+
+    - name: Set IPSEC transform-set on siteA
+      ios_config:
+        provider: "{{cli}}"
+        parents:
+          - crypto ipsec transform-set TS esp-aes 256 esp-sha-hmac 
+        lines:
+          - mode tunnel
+
+    - name: Set IPSEC CryptoMap on siteA
+      ios_config:
+        provider: "{{cli}}"
+        parents:
+          - crypto map CMAP 10 ipsec-isakmp 
+        lines:
+          - set peer 10.0.1.11
+          - set transform-set TS 
+          - match address 100
+
+    - name: add GigabitEthernet1 interface on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - no shutdown
+          - ip nat outside
+        parents:
+          - interface GigabitEthernet1
+
+    - name: add GigabitEthernet2 interface on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - no shutdown
+          - ip address 10.0.1.10 255.255.255.0
+        parents:
+          - interface GigabitEthernet2
+
+    - name: add GigabitEthernet3 on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - no shutdown
+          - ip address 10.0.2.10 255.255.255.0
+        parents:
+          - interface GigabitEthernet3
+
+    - name: add loopback1 interface on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - description VTEP1
+          - ip address 10.0.20.31 255.255.255.255
+          - ip ospf 1 area 0
+        parents:
+          - interface loopback1
+
+    - name: add loopback2 interface on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - description VTEP2
+          - ip address 10.0.20.32 255.255.255.255
+          - ip ospf 1 area 0
+        parents:
+          - interface loopback2
+
+    - name: add Tunnel10 for ipip over ipsec on siteA
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - no shutdown
+          - vrf forwarding site1
+          - ip address 10.0.101.1 255.255.255.252
+          - tunnel source 10.0.1.10
+          - tunnel destination 10.0.1.11
+          - ip nat inside
+        parents:
+          - interface Tunnel10
+
+    - name: add Tunnel20 for ipip over ipsec on siteA
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - no shutdown
+          - vrf forwarding site2
+          - ip address 10.0.102.1 255.255.255.252
+          - tunnel source 10.0.1.10
+          - tunnel destination 10.0.1.11
+          - tunnel mode ipip
+        parents:
+          - interface Tunnel20
+
+    - name: add Tunnel100 for interconnection with siteB
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - no shutdown
+          - ip address 10.0.110.1 255.255.255.252
+          - tunnel source 10.0.2.10
+          - tunnel destination 10.0.2.11
+          - tunnel mode ipip
+          - ip ospf network non-broadcast
+          - ip ospf 1 area 0
+        parents:
+          - interface Tunnel100
+
+    - name: add BDI1 interface on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - no shutdown
+          - description L3VNI-SVI
+          - vrf forwarding site1
+          - ip address 22.22.22.1 255.255.255.0
+          - ip nat inside
+        parents:
+          - interface BDI1
+
+    - name: add BDI2 interface on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - no shutdown
+          - description L3VNI-SVI
+          - vrf forwarding site2
+          - ip address 22.22.22.2 255.255.255.0
+        parents:
+          - interface BDI2
+
+    - name: add nve1 subinterface on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - no shutdown
+          - no ip address
+          - source-interface Loopback1
+          - host-reachability protocol bgp
+          - member vni 1000000 vrf site1
+        parents:
+          - interface nve1
+
+    - name: add nve2 subinterface on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - no shutdown
+          - no ip address
+          - source-interface Loopback2
+          - host-reachability protocol bgp
+          - member vni 2000000 vrf site2
+        parents:
+          - interface nve2
+
+    - name: add BGP on Central Router for neighborship
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - neighbor 10.0.2.11 remote-as 65000
+        parents:
+          - router bgp 65000
+
+    - name: add BGP on Central Router for address-family ipv4
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - no neighbor 10.0.2.11 activate
+          - default-information originate
+          - exit-address-family
+        parents:
+          - router bgp 65000
+          - address-family ipv4
+
+    - name: add BGP on Central Router for address-family l2vpn evpn
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - rewrite-evpn-rt-asn
+          - neighbor 10.0.2.11 activate
+          - neighbor 10.0.2.11 send-community both
+          - exit-address-family
+        parents:
+          - router bgp 65000
+          - address-family l2vpn evpn
+
+    - name: add BGP on Central Router for address-family ipv4 vrf site1 
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - advertise l2vpn evpn
+          - redistribute connected
+          - redistribute static
+          - default-information originate
+          - exit-address-family
+        parents:
+          - router bgp 65000
+          - address-family ipv4 vrf site1 
+
+    - name: add BGP on Central Router for address-family ipv4 vrf site2
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - advertise l2vpn evpn
+          - redistribute connected
+          - redistribute static
+          - default-information originate
+          - exit-address-family
+        parents:
+          - router bgp 65000
+          - address-family ipv4 vrf site2
+
+    - name: Set IPSEC Interesting Traffic Accesslist for vrf site1 on siteA
+      ios_config:
+        provider: "{{cli}}"
+        parents:
+          - ip access-list extended natAcl
+        lines:
+          - 10 permit ip 10.0.11.0 0.0.0.255 any
+          - 20 permit ip 10.0.21.0 0.0.0.255 any
+
+    - name: Configuring nat for vrf site1 on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - ip nat inside source list natAcl interface GigabitEthernet1 vrf site1 overload
+
+    - name: Set static routes on Central Router
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - ip route vrf site2 0.0.0.0 0.0.0.0 Null0
+          - ip route vrf site1 10.0.11.0 255.255.255.0 Tunnel10
+          - ip route vrf site2 10.0.12.0 255.255.255.0 Tunnel20
+          - ip route vrf site1 0.0.0.0 0.0.0.0 GigabitEthernet1 10.0.10.1 global
+
+    - name: add crypto-map under GigabitEthernet3 interface on siteA
+      ios_config:
+        provider: "{{cli}}"
+        lines:
+          - crypto map CMAP
+        parents:
+          - interface GigabitEthernet3
