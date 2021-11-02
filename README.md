@@ -9,8 +9,8 @@ we have put one VM in each VRF for end to end connectivity test.
 
 In this Lab we use 
 ```
-1- vrf lite + gre over ipsec between siteA and central router
-2- VXLAN EVPN betwork siteB and central router.
+1- VRF Lite + GRE over IPSec between siteA and central router
+2- VXLAN/BGP_EVPN using L3VNI between siteB and central router.
 ```
 central is in charge of providing nat and internet access to VRF site1 in both edge1 and edge2
 
