@@ -241,7 +241,7 @@
           - no shutdown
           - description L3VNI-SVI
           - vrf forwarding site1
-          - ip address 22.22.22.1 255.255.255.0
+          - ip address 10.0.120.1 255.255.255.0
           - ip nat inside
         parents:
           - interface BDI1
@@ -253,7 +253,7 @@
           - no shutdown
           - description L3VNI-SVI
           - vrf forwarding site2
-          - ip address 22.22.22.2 255.255.255.0
+          - ip address 10.0.120.2 255.255.255.0
         parents:
           - interface BDI2
 
