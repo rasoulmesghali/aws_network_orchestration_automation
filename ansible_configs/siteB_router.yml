@@ -8,7 +8,7 @@
   vars:
     cli:
       username: ec2-user
-      # ssh_keyfile: key1.pem
+      ssh_keyfile: key1.pem
   # vars:
   #   cli:
   #     username: cisco
@@ -104,8 +104,8 @@
         provider: "{{cli}}"
         lines:
           - no shutdown
-          - vrf forwarding site2
-          - ip address 10.0.22.10 255.255.255.0
+          - vrf forwarding site1
+          - ip address 10.0.21.10 255.255.255.0
         parents:
           - interface GigabitEthernet2
 
@@ -114,8 +114,8 @@
         provider: "{{cli}}"
         lines:
           - no shutdown
-          - vrf forwarding site1
-          - ip address 10.0.21.10 255.255.255.0
+          - vrf forwarding site2
+          - ip address 10.0.22.10 255.255.255.0
         parents:
           - interface GigabitEthernet3
 
@@ -251,3 +251,9 @@
         parents:
           - router bgp 65000
           - address-family ipv4 vrf site2
+
+    - name: add save Config
+      ios_command:
+        provider: "{{cli}}"
+        commands:
+          - write

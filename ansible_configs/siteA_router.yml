@@ -8,7 +8,7 @@
   vars:
     cli:
       username: ec2-user
-      # ssh_keyfile: key1.pem
+      ssh_keyfile: key1.pem
   # vars:
   #   cli:
   #     username: cisco
@@ -246,3 +246,8 @@
         parents:
           - interface GigabitEthernet1
 
+    - name: add save Config
+      ios_command:
+        provider: "{{cli}}"
+        commands:
+          - write
