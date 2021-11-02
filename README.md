@@ -44,7 +44,10 @@ then it will create required subnets and route tables, security groups, elastic 
 > **NOTE** 
 >
 > You need to create key pair for ssh connection you can do it from AWS console inside ec2 console or create ssh key pair 
-in your local machine and copy your public key inside the file "ec2_key_pair.tf" in terraform folder and uncomment all lines.
+in your local machine and copy your public key inside the file "ec2_key_pair.tf" in terraform folder and uncomment all lines. 
+
+> **NOTE** 
+> Do not forget to put the key file(.pem) inside the "ansible_configs" folder
 
 > **NOTE** 
 >
@@ -63,7 +66,17 @@ ansible-playbook siteA_router.yml -i hosts.cfg
 ansible-playbook siteB_router.yml -i hosts.cfg
 ansible-playbook central_router.yml -i hosts.cfg
 ```
+### How to connect to our ec2 instances and our routers using SSH
+
+Pleas go to the "ansible_configs" folder where you have put your key pair, then run the following command to connect to your ec2 router or vms:
 
 
-# notes
-- Make sure you install helm version 3.3.1
+```bash
+ssh -i key1.pem ec2-user@public_ip_address_of_your_instance
+```
+### What is the publib ip address of all routers?
+
+1- After running "terraform apply" it will automatically update the "hosts.cfg" file you can find the routers ip addresses
+2- from AWS/EC2/instnaces console
+## notes
+- Inside AWS/EC2 console check the public ip address of "connection_test_vm" then connect using ssh and create a new key file and copy the content of key pair inside "ansible_configs" folder.
