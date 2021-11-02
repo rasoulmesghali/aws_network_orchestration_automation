@@ -8,17 +8,19 @@ There are 2 sites including edge_router1 and edge_router2 as well as central_rou
 we have put one VM in each VRF for end to end connectivity test.
 
 In this Lab we use 
+```
 1- vrf lite + gre over ipsec between siteA and central router
 2- VXLAN EVPN betwork siteB and central router.
-
+```
 central is in charge of providing nat and internet access to VRF site1 in both edge1 and edge2
 
 ### Prerequirements
-
+```
 1- Have the latest version of Terraform installed on your local machine.
 2- Have the latest version of Asnible installed on your local machine.
 3- Have the latest version of AWS CLI installed on your local machine.
 4- Have AWS user credential set on your local machine using the "aws configure" command.
+```
 ### Network Provisioning using Terraform
 
 We use terraform in order to build the whole AWS infrustracture.
