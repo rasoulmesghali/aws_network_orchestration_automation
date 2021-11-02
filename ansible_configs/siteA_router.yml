@@ -114,30 +114,16 @@
         parents:
           - interface Tunnel20
 
-    # - name: add loopback11 interface on siteA
-    #   ios_config:
-    #     provider: "{{cli}}"
-    #     lines:
-    #       - ip address 10.0.11.10 255.255.255.0
-    #     parents:
-    #       - interface loopback11
-
-    # - name: add loopback12 interface on siteA
-    #   ios_config:
-    #     provider: "{{cli}}"
-    #     lines:
-    #       - ip address 10.0.12.10 255.255.255.0
-    #     parents:
-    #       - interface loopback12
-
     - name: Set IPSEC Interesting Traffic Accesslist for vrf site1 on siteA
       ios_config:
         provider: "{{cli}}"
         parents:
           - ip access-list extended 100
         lines:
-          - 10 permit ipinip host 10.0.1.11 host 10.0.1.10
-          - 20 permit gre host 10.0.1.11 host 10.0.1.10
+          - 21 permit ipinip host 10.0.1.11 host 10.0.105.2
+          - 22 permit gre host 10.0.1.11 host 10.0.105.2
+          - 23 permit ipinip host 10.0.1.11 host 10.0.105.1
+          - 24 permit gre host 10.0.1.11 host 10.0.105.1
 
     - name: Set policy and ISAKMP exchange key on siteA
       ios_config:

@@ -92,8 +92,10 @@
         parents:
           - ip access-list extended 100
         lines:
-          - 10 permit ipinip host 10.0.1.10 host 10.0.1.11
-          - 20 permit gre host 10.0.1.10 host 10.0.1.11
+          - 21 permit ipinip host 10.0.105.2 host 10.0.1.11
+          - 22 permit gre host 10.0.105.2 host 10.0.1.11
+          - 23 permit ipinip host 10.0.105.1 host 10.0.1.11
+          - 24 permit gre host 10.0.105.1 host 10.0.1.11
 
     - name: Set policy and ISAKMP exchange key on siteA
       ios_config:

@@ -98,6 +98,34 @@ show ip route vrf site2
 show ip cef vrf site1
 show ip cef vrf site2
 ping vrf site1 10.0.11.100 source 10.0.21.10
-ping vrf site1 10.0.12.100 source 10.0.21.10
+ping vrf site1 10.0.12.100 source 10.0.21.10 #must not get response
 ping vrf site1 10.0.22.100 source 10.0.21.10
+ping vrf site1 8.8.8.8 source 10.0.21.10
+```
+
+Router siteA:
+
+```bash
+show crypto isakmp sa
+show ip route vrf site1
+show ip route vrf site2
+show ip cef vrf site1
+show ip cef vrf site2
+ping vrf site1 10.0.12.100 source 10.0.11.10
+ping vrf site1 10.0.21.100 source 10.0.11.10
+ping vrf site1 10.0.22.100 source 10.0.11.10 #must not get response
+ping vrf site1 8.8.8.8 source 10.0.11.10
+```
+
+Router central:
+
+```bash
+show nve peers
+show ip ospf neighbor
+show bgp l2vpn evpn
+show crypto isakmp sa
+show ip route vrf site1
+show ip route vrf site2
+show ip cef vrf site1
+show ip cef vrf site2
 ```
