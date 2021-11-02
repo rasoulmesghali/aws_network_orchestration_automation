@@ -129,3 +129,17 @@ show ip route vrf site2
 show ip cef vrf site1
 show ip cef vrf site2
 ```
+
+### Connecting to "connection_test_vm" machine then connect to other vms
+
+1- creat key pair file like below:
+
+```bash
+touch key1.pem
+nano key1.pem # then copy the content of key pair then paste here
+
+ssh -i key1.pem ec2-user@10.0.11.100
+ssh -i key1.pem ec2-user@10.0.12.100
+ssh -i key1.pem ec2-user@10.0.21.100
+ssh -i key1.pem ec2-user@10.0.22.100
+```
