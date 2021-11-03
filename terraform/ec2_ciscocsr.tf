@@ -18,7 +18,7 @@ resource "aws_instance" "edgeRouterA" {
   subnet_id = aws_subnet.central_edge_a.id
   private_ip = "10.0.1.11"
   associate_public_ip_address = "true"
-  # source_dest_check = false
+  source_dest_check = false
   vpc_security_group_ids = [aws_security_group.allow_all.id]
   key_name = "key1"
   tags = {
@@ -32,7 +32,7 @@ resource "aws_instance" "edgeRouterB" {
   subnet_id = aws_subnet.central_edge_b.id
   private_ip = "10.0.2.11"
   associate_public_ip_address = "true"
-  # source_dest_check = false
+  source_dest_check = false
   vpc_security_group_ids = [aws_security_group.allow_all.id]
   key_name = "key1"
   tags = {

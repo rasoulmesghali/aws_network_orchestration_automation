@@ -32,22 +32,8 @@ output "sn_site_2a_ids" {
   description = "The ID of the site_2a Private Subnet."
 }
 
-# output "rt_public_id" {
-#   value       = aws_route_table.rt_public.id
-#   description = "The ID of the public route table."
-# }
-
-# output "rt_private_id" {
-#   value       = aws_route_table.rt_private.id
-#   description = "The ID of the private route table."
-# }
-
 output "igw_id" {
   value       = aws_internet_gateway.igw.id
   description = "The ID of the internet gateway."
 }
 
-# output "nat_ip" {
-#   value       = local.create_nat == 1 ? aws_nat_gateway.natgw[0].public_ip : ""
-#   description = "The IP of the NAT Gateway."
-# }

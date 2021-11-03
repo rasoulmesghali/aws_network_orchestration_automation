@@ -368,13 +368,13 @@
           - ip route vrf site2 10.0.12.0 255.255.255.0 Tunnel20
           - ip route vrf site1 0.0.0.0 0.0.0.0 GigabitEthernet1 10.0.10.1 global
 
-    - name: add crypto-map under GigabitEthernet3 interface on siteA
+    - name: add crypto-map under GigabitEthernet2 interface on siteA
       ios_config:
         provider: "{{cli}}"
         lines:
           - crypto map CMAP
         parents:
-          - interface GigabitEthernet3
+          - interface GigabitEthernet2
 
     - name: add save Config
       ios_command:
