@@ -30,13 +30,14 @@ We use terraform in order to build the whole AWS infrustracture.
 use the following commands in order to run and build the infrastructure:
 
 ```bash
-terraform init
-terraform validate
-terraform plan
-terraform apply
+chmod +x setup.sh
+chmod +x destroy.sh
+chmod 600 key1.pem
+
+./setup.sh
 ```
 
-After running terraform a new VPN called "my-vpc" with cidr block 10.0.0.0/16
+After running "setup.sh" a new VPC called "my-vpc" with cidr block 10.0.0.0/16
 then it will create required subnets and route tables, security groups, elastic interfaces, aws instances, ...
 
 > **NOTE** 
@@ -50,7 +51,7 @@ in your local machine and copy your public key inside the file "ec2_key_pair.tf"
 
 > **NOTE** 
 > 
-> Do not forget to put the key file(.pem) inside the "ansible_configs" folder
+> Do not forget to put the key file(.pem) inside the root folder
 
 > **NOTE** 
 >
@@ -61,17 +62,16 @@ in your local machine and copy your public key inside the file "ec2_key_pair.tf"
 > after applying terraform it will create inventory file (hosts.cfg) inside "ansible_configs" folder for router configurations 
 ### Network Automation using Ansible
 
-Befor running the ansible commands, in AWS console in EC2 check the status of all your machines is "running" then you can run ansible commands.
-in order to configure all your routers, you need to go the "ansible_configs" folder and run the following commands.
+All required command is added to the "setup.sh" file. if you run this file, terraform and ansible will create everything.
 
 ```bash
-ansible-playbook siteA_router.yml -i hosts.cfg
-ansible-playbook siteB_router.yml -i hosts.cfg
-ansible-playbook central_router.yml -i hosts.cfg
+ansible-playbook -i ${WD}/ansible_configs/hosts.cfg ${WD}/ansible_configs/siteA_router.yml 
+ansible-playbook -i ${WD}/ansible_configs/hosts.cfg ${WD}/ansible_configs/siteB_router.yml 
+ansible-playbook -i ${WD}/ansible_configs/hosts.cfg ${WD}/ansible_configs/central_router.yml
 ```
 ### How to connect to our ec2 instances and our routers using SSH
 
-Pleas go to the "ansible_configs" folder where you have put your key pair, then run the following command to connect to your ec2 router or vms:
+Pleas put your key pair in the root folder, then run the following command to connect to your ec2 router or vms:
 
 
 ```bash
